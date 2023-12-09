@@ -57,7 +57,7 @@ contract Chat{
 
     // Check if user exists
     function checkUserExists(address key) public view returns(bool){
-        return bytes(userList[key].username).length > 0;
+        return keccak256(abi.encodePacked(userList[key].username)) != keccak256(abi.encodePacked(""));
     }
 
     // Create a account
@@ -78,12 +78,14 @@ contract Chat{
     
     // Sends message
     function sendMessage(string calldata chat, string calldata _msg) external {
+        require(chats[chat] != 0, "Chat does not exist");
         message memory newMsg = message(msg.sender, block.timestamp, _msg);
         allMessages[chats[chat]].push(newMsg);
     }
 
     // Read message
     function readMessage(string calldata chat) external view returns(message[] memory){
+        require(chats[chat] != 0, "Chat does not exist");
         return allMessages[chats[chat]];
     }
     // Get all users

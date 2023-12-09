@@ -4,7 +4,9 @@ import Image from "next/image";
 import Style from "./UserCard.module.css";
 
 const UserCard = ({chat, index, addChat}) => {
-    // console.log(chat);
+    console.log(addChat);
+    console.log(chat);
+    console.log(index);
     return (
         <div className={Style.UserCard}>
             <div className={Style.UserCard_box}>

@@ -40,12 +40,14 @@ const Model = ({ openBox,
                         </div>
                         <div className={Style.Model_box_right_name_info}>
                             <input type="text" 
-                            placeholder={address || "Enter Address..."}
-                            onChange={(e) => setAccountAddress(e.target.value)}
+                            value={address}
+                            disabled={true}
+                            
                             />
                         </div>
                         <div className={Style.Model_box_right_name_btn}>
                             <button onClick={() => functionName({name, accountAddress})}>
+                            
                                 {""}
                                 Submit
                                 {""}
