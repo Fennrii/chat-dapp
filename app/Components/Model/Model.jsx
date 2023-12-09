@@ -9,7 +9,8 @@ const Model = ({ openBox,
     head,
     info,
     smallInfo,
-    functionName,
+    functionNameUA,
+    functionNameCA,
     address, 
     }) => {
 
@@ -46,7 +47,7 @@ const Model = ({ openBox,
                             />
                         </div>
                         <div className={Style.Model_box_right_name_btn}>
-                            <button onClick={() => functionName({name, accountAddress})}>
+                            <button onClick={() => functionNameCA({name, accountAddress})}>
                             
                                 {""}
                                 Submit

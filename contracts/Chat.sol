@@ -53,6 +53,11 @@ contract Chat{
         chats["All"] = numChats;
         allChatNames.push("All");
 
+        // Create second default chat
+        numChats++;
+        chats["General"] = numChats;
+        allChatNames.push("General");
+
     }
 
     // Check if user exists
@@ -72,8 +77,12 @@ contract Chat{
 
     // Get username from address
     function getUsername(address key) external view returns (string memory){
-        require(checkUserExists(key), "User is not registered");
-        return userList[key].username;
+        if(checkUserExists(key)){
+            return userList[key].username;
+        }
+        else{
+            return "User does not exist";
+        }
     }
     
     // Sends message

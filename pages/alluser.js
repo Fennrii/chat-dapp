@@ -6,20 +6,20 @@ import { ChatContext } from '@/app/Context/ChatContext'
 
 
 const alluser = () => {
-    const {allUsers, addChat} = useContext(ChatContext)
-    console.log('Alluser')
-    console.log(allUsers)
+    const {chatNames, addChat} = useContext(ChatContext)
+    // console.log('Alluser')
+    // console.log(chatNames)
     return (
         <div>
             <div className={Style.alluser_info}>
                 <h1>Find your Chats</h1>
             </div>
             <div className={Style.alluser}>
-                {allUsers.map((chat, index) => (
+                {chatNames.map((chat, index) => (
                     <UserCard 
-                        key={index+1}
+                        key={index}
+                        i={index+1}
                         name={chat}
-                        address={user.address}
                         addChat={addChat}
                     />
                 ))}

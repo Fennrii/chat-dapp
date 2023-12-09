@@ -3,22 +3,22 @@ import Image from "next/image";
 
 import Style from "./UserCard.module.css";
 
-const UserCard = ({chat, index, addChat}) => {
-    console.log(addChat);
-    console.log(chat);
-    console.log(index);
+const UserCard = ({name, i, addChat}) => {
     return (
         <div className={Style.UserCard}>
             <div className={Style.UserCard_box}>
                 <div className={Style.UserCard_box_info}>
-                    <h3>{chat.chatName}</h3>
+                    {/* <h3>{name}</h3> */}
                 </div>
-                {/* <Image src="/images/chat.png" alt="chat" width={100} height={100} /> */}
+                {/* <Image 
+                className{Style.UserCard_box_img} src="/images/chat.png" alt="chat" width={100} height={100} /> */}
                 <div className={Style.UserCard_box_info}>
-                    <h3>{chat.chatName}</h3>
+                    <h3>{name}</h3>
+                    <button onClick={() => addChat(name)}>Add Chat</button>
 
                 </div>
             </div>
+            <small className={Style.number}>{i}</small>
         </div>
 
     )

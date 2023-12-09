@@ -38,7 +38,7 @@ const NavBar = () => {
     const [open, setOpen] = useState(false);
     const [openModel, setOpenModel] = useState(false);
 
-    const { account, userName, connectWallet, createAccount, error } = useContext(ChatContext);
+    const { account, userName, connectWallet, createAccount, error, setUserName } = useContext(ChatContext);
     return (
         <div className={Style.NavBar}>
             <div className={Style.Navbar_box}>
@@ -86,7 +86,8 @@ const NavBar = () => {
                         head="CHAT BODY"
                         info='Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel, dolores. Inventore harum et ea laboriosam non facilis, suscipit iure quidem magni tenetur earum. Nulla ratione quod totam aliquid debitis aut!'
                         smallInfo='Kindly select your name...'
-                        functionName={createAccount}
+                        functionNameCA={createAccount}
+                        functionNameUA={setUserName}
                         address={account}
                     />
                 </div>

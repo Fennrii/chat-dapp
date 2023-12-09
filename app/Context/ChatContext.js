@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { CheckIfWalletIsConnected, connectWallet, conenctingWithContract} from '../../Utils/apiFeature';
+import { ethers }  from "ethers";
 
 export const ChatContext = React.createContext();
 
@@ -24,35 +25,25 @@ export const ChatProvider = ({ children }) => {
     const fetchData = async () => {
         try {
             const contract = await conenctingWithContract();
-            // get account
-            console.log('contract');
-            console.log(contract);
             const connectAccount = await connectWallet();
-            console.log('connectAccount');
-            console.log(connectAccount);
-            // setAccount(connectAccount);
-            // setAccount(connectAccount);
-            setAccount(connectAccount);
-            // get username
-            console.log('account');
-            console.log(account);
-            const username = await contract.methods.getUsername(account);
-            setUserName(username[0]);
-            console.log('username');
-            console.log(username)
-            console.log(userName)
+
+            // Ensure connectAccount is a valid address
+            if (connectAccount && ethers.utils.isAddress(connectAccount)) {
+                setAccount(connectAccount);
+
+                // Now we can safely use connectAccount to call getUsername
+                const username = await contract.methods.getUsername(connectAccount).call();
+                setUserName(username);
+            } else {
+                throw new Error('Invalid account address');
+            }
             // get all users
-            const allUsers = await contract.methods.getAllAppUsers();
-            console.log('allUsers');
-            console.log(allUsers);
+            const allUsers = await contract.methods.getAllAppUsers().call();
             setAllUsers(allUsers);
-            // console.log('allUsers');
-            // console.log(allUsers);
             // get chat names
-            const chatNames = await contract.methods.getAllChatNames();
-            console.log('chatNames');
-            console.log(chatNames);
+            const chatNames = await contract.methods.getAllChatNames().call();
             setChatNames(chatNames);
+            console.log(userName)
         } catch (error) {
             console.log(error);
             setError("Please install and connect your wallet to continue");
@@ -60,15 +51,14 @@ export const ChatProvider = ({ children }) => {
         
     };
     useEffect(() => {
-        console.log('useEffect')
         fetchData();
-    } ,[]);
+    } ,[userName, account]);
 
     // Read message
     const readMessage = async (chatName) => {
         try {
             const contract = await conenctingWithContract();
-            const read = await contract.methods.readMessage(chatName);
+            const read = await contract.methods.readMessage(chatName).call();
             setMessages(read);
         } catch (error) {
             setError("You have no messages")
@@ -81,9 +71,8 @@ export const ChatProvider = ({ children }) => {
             if (!name) return setError("Please fill all fields")
 
             const contract = await conenctingWithContract();
-            const getCreatedUser = await contract.methods.createAccount(name);
             setLoading(true);
-            // await getCreatedUser.wait();
+            const getCreatedUser = await contract.methods.createAccount(name).send({from: account});
             console.log('getCreatedUser')
             console.log(getCreatedUser)
             setLoading(false);
@@ -101,7 +90,7 @@ export const ChatProvider = ({ children }) => {
         try {
             if (!chatName) return setError("Please fill all fields")
             const contract = await conenctingWithContract();
-            const addChat = await contract.methods.addChat(chatName);
+            const addChat = await contract.methods.addChat(chatName).send({from: account});
             setLoading(true);
             await addChat.wait();
             setLoading(false);
@@ -118,7 +107,7 @@ export const ChatProvider = ({ children }) => {
         try {
             if(!chatName) return setError("Please fill all fields")
             const contract = await conenctingWithContract();
-            const createChat = await contract.methods.createChat(chatName);
+            const createChat = await contract.methods.createChat(chatName).send({from: account});
             setLoading(true);
             await createChat.wait();
             setLoading(false);
@@ -135,7 +124,7 @@ export const ChatProvider = ({ children }) => {
             if (!msg || !chatName) return setError("Please fill all fields")
            
             const contract = await conenctingWithContract();
-            const addMessage = await contract.methods.sendMessage(chatName,msg);
+            const addMessage = await contract.methods.sendMessage(chatName,msg).send({from: account});
             setLoading(true);
             await addMessage.wait();
             setLoading(false);
@@ -148,7 +137,7 @@ export const ChatProvider = ({ children }) => {
     // Read info
     const readUser = async (userAddress) => {
         const contract = await conenctingWithContract();
-        const usersName = await contract.methods.getUsername(userAddress);
+        const usersName = await contract.methods.getUsername(userAddress).call();
         setCurrentUserName(usersName);
         setCurrentUserAddress(userAddress);
     };
@@ -163,6 +152,7 @@ export const ChatProvider = ({ children }) => {
         createChat, 
         connectWallet,
         CheckIfWalletIsConnected,
+        setUserName,
         account, 
         userName,
         messages,
