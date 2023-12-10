@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 
 import Style from "@/app/Components/Forum/Chat/Chat.module.css";
@@ -19,31 +19,28 @@ const Chat = ({functionName,
     });
     const [messages, setMessages] = useState([]);
     console.log("currentChat", currentChat);
+    let oldchat = '';
     
-
     useEffect(() => {
-        const fetchData = async (currentChat) => {
-            let temp = true; 
-            let count = 0
-            let messageArray = []; // Initialize messageArray as an empty array
-            console.log("currentChat", currentChat);
-            do {
-              messageArray = await readMessage(currentChat);
-              console.log("messageArrays", messageArray);
-              
-              if ( await messageArray === undefined) { // If messageArray is defined, we want to exit the loop
-                console.log("messageArray", messageArray);
-                temp = false; // Set temp to false to exit the loop
-              } else {
-                console.log("messageArray", messageArray);
-                console.log("temp", true);
-                temp = true; // If undefined, set temp to true to continue the loop
-              }
-            } while (temp); // This will continue while temp is true (meaning messageArray is undefined)
-            setMessages(messageArray); // Once messageArray is defined, set it to messages state
-          };
-        fetchData(currentChat);
+        let isSubscribed = true; // Flag to manage subscription state
+
+        const fetchData = async () => {
+            if (currentChat) {
+                const messageArray = await readMessage(currentChat);
+                if (isSubscribed && messageArray) {
+                    setMessages(messageArray);
+                }
+            }
+        };
+
+        fetchData();
+
+        // Cleanup function to set isSubscribed to false when component unmounts or chat changes
+        return () => {
+            isSubscribed = false;
+        };
     }, [currentChat]);
+    
     console.log("messages", messages);
     const router = useRouter();
     useEffect(() => {
@@ -67,19 +64,19 @@ const Chat = ({functionName,
             <div className={Style.Chat_box_box}>
                 <div className={Style.Chat_box}>
                     <div className={Style.Chat_box_left}>
-                        {
-                           messages.map((item, index) => {
-                                console.log("item", item);
-                                console.log("index", index);
-                                <div key={index + 1}>
+                        {messages.map((item, index) => {
+                            console.log("item", item);
+                            console.log("index", index);
+                            return (
+                                <div key={index}>
                                     <div className={Style.Chat_box_left_title}>
                                         <span>{item.poster}</span>
                                         <small>Time: {convertTime(item.timestamp)}</small>
                                     </div>
-                                    <p >{item.message}</p>
+                                    <p>{item.message}</p>
                                 </div>
-                            }
-                        )}
+                            );
+                        })}
                     </div>
                 </div>
                 {currentChat ? (

@@ -122,10 +122,9 @@ export const ChatProvider = ({ children }) => {
             console.log('allUserChats')
             console.log(allUserChats)
             setUserChats(allUserChats);
-            // await addChat.wait();
             setLoading(false);
             router.push('/');
-            // window.location.reload();
+            window.location.reload();
             
         } catch (error) {
             setError("Something went wrong. Please try again")
@@ -136,15 +135,22 @@ export const ChatProvider = ({ children }) => {
     const createChat = async (chatName) => {
         try {
             if(!chatName) return setError("Please fill all fields")
-            const contract = await conenctingWithContract();
-            const createChat = await contract.methods.createChat(chatName).send({from: account});
             setLoading(true);
-            await createChat.wait();
+            const contract = await conenctingWithContract();
+            if (typeof chatName.name !== 'string') {
+                console.log("chatName", chatName)
+                throw new Error('chatName must be a string');
+            }
+            const createChat = await contract.methods.createChat(chatName.name).send({from: account});
+            
+            // await createChat.wait();
             setLoading(false);
             router.push('/');
             window.location.reload();
         } catch (error) {
-            addError("Something went wrong. Please try again")
+            setLoading(false);
+            console.log(error)
+            // addError("Something went wrong. Please try again")
         }
     };
 

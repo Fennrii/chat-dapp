@@ -17,11 +17,11 @@ const NavBar = () => {
             link: '/',
         },
         {
-            menu: 'Create Server',
-            link: 'create',
+            menu: '',
+            link: '/',
         },
         {
-            menu: 'SETTING',
+            menu: '',
             link: '/',
         },
         
