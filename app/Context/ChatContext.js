@@ -11,13 +11,12 @@ export const ChatProvider = ({ children }) => {
     const [userName, setUserName] = useState('');
     const [messages, setMessages] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
-    // const [chatName, setChatName] = useState('');
+    const [userChats, setUserChats] = useState([]);
     const [chatNames, setChatNames] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const [currentUserName, setCurrentUserName] = useState('');
-    const [currentUserAddress, setCurrentUserAddress] = useState('');
+    const [currentChat, setCurrentChat] = useState('');
 
     const router = useRouter();
 
@@ -38,12 +37,22 @@ export const ChatProvider = ({ children }) => {
                 throw new Error('Invalid account address');
             }
             // get all users
-            const allUsers = await contract.methods.getAllAppUsers().call();
-            setAllUsers(allUsers);
+            const allUser = await contract.methods.getAllAppUsers().call();
+            const allUserArray = allUser.map(user => user.username);
+            setAllUsers(allUserArray);
+            console.log(allUsers)
             // get chat names
             const chatNames = await contract.methods.getAllChatNames().call();
             setChatNames(chatNames);
-            console.log(userName)
+            console.log(chatNames)
+            // get user chats
+            const allUserChats = await contract.methods.getUserChats(account).call();
+            const chatNamesArray = allUserChats.map(chat => chat.chatName);
+            console.log('allUserChats')
+            console.log(chatNamesArray)
+            setUserChats(chatNamesArray);
+            setMessages(readMessage(chatNamesArray[0]));
+
         } catch (error) {
             console.log(error);
             setError("Please install and connect your wallet to continue");
@@ -52,17 +61,21 @@ export const ChatProvider = ({ children }) => {
     };
     useEffect(() => {
         fetchData();
-    } ,[userName, account]);
+    } ,[account]);
 
     // Read message
     const readMessage = async (chatName) => {
         try {
             const contract = await conenctingWithContract();
             const read = await contract.methods.readMessage(chatName).call();
+            console.log(read)
+
             setMessages(read);
+            return read;
         } catch (error) {
             setError("You have no messages")
         };
+        
     };
 
     // Create account
@@ -85,22 +98,39 @@ export const ChatProvider = ({ children }) => {
         }
     };
 
+    const updateUserChats = async () => {
+        try {
+            const contract = await conenctingWithContract();
+            const allUserChats = await contract.methods.getUserChats().call();
+            setUserChats(allUserChats);
+        } catch (error) {
+            setError("Something went wrong. Please try again")
+        }
+    };
+
     // Add chat to user
     const addChat = async (chatName) => {
         try {
             if (!chatName) return setError("Please fill all fields")
             const contract = await conenctingWithContract();
-            const addChat = await contract.methods.addChat(chatName).send({from: account});
             setLoading(true);
-            await addChat.wait();
+            console.log(account)
+            const addChat = await contract.methods.addChat(chatName).send({from: account});
+            console.log('addChat')
+            console.log(addChat)
+            const allUserChats = await contract.methods.getUserChats().call();
+            console.log('allUserChats')
+            console.log(allUserChats)
+            setUserChats(allUserChats);
+            // await addChat.wait();
             setLoading(false);
             router.push('/');
-            window.location.reload();
+            // window.location.reload();
             
         } catch (error) {
             setError("Something went wrong. Please try again")
         }
-    }
+    };
 
     // Create chat
     const createChat = async (chatName) => {
@@ -119,14 +149,14 @@ export const ChatProvider = ({ children }) => {
     };
 
     // Send message
-    const sendMessage = async ({chatName,msg}) => {
+    const sendMessage = async ({msg,chatName}) => {
         try {
-            if (!msg || !chatName) return setError("Please fill all fields")
-           
+            // if (!msg || !chatName) return setError("Please fill all fields")
+            setLoading(true);
+
             const contract = await conenctingWithContract();
             const addMessage = await contract.methods.sendMessage(chatName,msg).send({from: account});
-            setLoading(true);
-            await addMessage.wait();
+            // await addMessage.wait();
             setLoading(false);
             window.location.reload();
         } catch (error) {
@@ -138,13 +168,15 @@ export const ChatProvider = ({ children }) => {
     const readUser = async (userAddress) => {
         const contract = await conenctingWithContract();
         const usersName = await contract.methods.getUsername(userAddress).call();
-        setCurrentUserName(usersName);
-        setCurrentUserAddress(userAddress);
+        return usersName;
     };
 
 
+
     return (
-        <ChatContext.Provider value={{readMessage, 
+        <ChatContext.Provider value={{
+            updateUserChats,
+        readMessage, 
         createAccount, 
         sendMessage, 
         readUser, 
@@ -153,13 +185,14 @@ export const ChatProvider = ({ children }) => {
         connectWallet,
         CheckIfWalletIsConnected,
         setUserName,
+        setCurrentChat,
+        currentChat,
         account, 
         userName,
         messages,
         allUsers,
-        currentUserName,
-        currentUserAddress,
         chatNames,
+        userChats,
         loading, 
         error}}>
             {children}

@@ -52,7 +52,9 @@ export const conenctingWithContract = async() => {
 };
 
 export const convertTime = (time) => {
-    const newTime = new Date(time);
+    let timestamp = typeof time === 'bigint' ? Number(time) : time;
+
+    const newTime = new Date(timestamp);
 
     const realTime = newTime.getHours() + ':' 
     + newTime.getMinutes() + ':' + newTime.getSeconds() 

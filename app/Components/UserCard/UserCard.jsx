@@ -14,7 +14,7 @@ const UserCard = ({name, i, addChat}) => {
                 className{Style.UserCard_box_img} src="/images/chat.png" alt="chat" width={100} height={100} /> */}
                 <div className={Style.UserCard_box_info}>
                     <h3>{name}</h3>
-                    <button onClick={() => addChat(name)}>Add Chat</button>
+                    <button onClick={() => addChat(name)}>Add Server</button>
 
                 </div>
             </div>

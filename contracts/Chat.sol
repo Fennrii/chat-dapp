@@ -128,5 +128,9 @@ contract Chat{
     function getAllChatNames() external view returns(string[] memory){
         return allChatNames;
     }
+    // get chats
+    function getUserChats(address userIn) external view returns(Chats[] memory){
+        return userList[userIn].chatList;
+    }
 
 }

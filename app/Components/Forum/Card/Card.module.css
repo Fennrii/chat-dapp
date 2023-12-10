@@ -1,0 +1,46 @@
+.Card{
+    margin-bottom: 1rem;
+}
+.Card_box{
+    display: flex;
+    align-items: center;
+    line-height: 0;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #f18303;
+    cursor: pointer;
+    border-radius: 2rem;
+}
+
+.Card_box_right{
+    display: flex;
+    gap: 1rem;
+    padding: 1rem .5rem;
+    border-radius: 2rem;
+    align-items: center;
+    border: none;
+
+}
+
+.Card_box_right_middle{
+    margin-top: -1.2rem;
+}
+
+.Card_box_left{
+    border-radius: 50%;
+}
+
+
+.Card_box_right button{
+    outline: none;
+    border: none;
+    padding: 1rem 2rem;
+    color: #f18303;
+    border-radius: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+
+}

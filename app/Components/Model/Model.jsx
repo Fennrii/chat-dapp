@@ -9,8 +9,7 @@ const Model = ({ openBox,
     head,
     info,
     smallInfo,
-    functionNameUA,
-    functionNameCA,
+    functionName,
     address, 
     }) => {
 
@@ -35,26 +34,24 @@ const Model = ({ openBox,
                         <div className={Style.Model_box_right_name}>
                         <div className={Style.Model_box_right_name_info}>
                             <input type="text" 
-                            placeholder="Your Name" 
+                            placeholder="Name" 
                             onChange={(e) => setName(e.target.value)}
                             />
                         </div>
-                        <div className={Style.Model_box_right_name_info}>
+                        {/* <div className={Style.Model_box_right_name_info}>
                             <input type="text" 
-                            value={address}
-                            disabled={true}
+                            placeholder={address || "Enter address"}
+                            // disabled={true}
                             
                             />
-                        </div>
+                        </div> */}
                         <div className={Style.Model_box_right_name_btn}>
-                            <button onClick={() => functionNameCA({name, accountAddress})}>
+                            <button onClick={() => functionName({name})}>
                             
                                 {""}
                                 Submit
                                 {""}
                             </button>
-                        </div>
-                        <div className={Style.Model_box_right_name_btn}>
                             <button onClick={() => openBox(false)}>
                                 {""}
                                 Cancel

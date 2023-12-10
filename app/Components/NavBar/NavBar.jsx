@@ -9,7 +9,7 @@ import { Model, Error } from '@/app/Components/index';
 const NavBar = () => {
     const menuItems = [
             {
-            menu: 'All Users',
+            menu: 'All Servers',
             link: 'alluser',
         },
         {
@@ -17,21 +17,14 @@ const NavBar = () => {
             link: '/',
         },
         {
-            menu: 'CONTACT',
-            link: '/',
+            menu: 'Create Server',
+            link: 'create',
         },
         {
             menu: 'SETTING',
             link: '/',
         },
-        {
-            menu: 'FAQS',
-            link: '/',
-        },
-        {
-            menu: 'TOS',
-            link: '/',
-        },
+        
     ]
 
     const [active, setActive] = useState(2);
@@ -42,9 +35,9 @@ const NavBar = () => {
     return (
         <div className={Style.NavBar}>
             <div className={Style.Navbar_box}>
-                <div className={Style.NavBar_box_left}>
+                {/* <div className={Style.NavBar_box_left}> */}
                     {/* <Image src="/images/logo.png" alt="Logo" width={50} height={50} /> */}
-                </div>
+                {/* </div> */}
                 <div className={Style.NavBar_box_right}>
                     {/* No mobile integration */}
                     <div className={Style.NavBar_box_right_menu}>
@@ -86,13 +79,12 @@ const NavBar = () => {
                         head="CHAT BODY"
                         info='Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel, dolores. Inventore harum et ea laboriosam non facilis, suscipit iure quidem magni tenetur earum. Nulla ratione quod totam aliquid debitis aut!'
                         smallInfo='Kindly select your name...'
-                        functionNameCA={createAccount}
-                        functionNameUA={setUserName}
+                        functionName={createAccount}
                         address={account}
                     />
                 </div>
             )}
-            {error == "" ? "" : <Error error={error} />}
+            {/* {error == "" ? "" : <Error error={error} />} */}
         </div>
     )
 };
